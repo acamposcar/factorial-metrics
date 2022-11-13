@@ -6,10 +6,10 @@ const Navbar = () => {
   const { data: sessionData } = useSession()
 
   const linkStyle =
-    'rounded-md p-1 font-medium transition duration-75 ease-in-out hover:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
+    'rounded-md p-1 whitespace-nowrap inline-block font-medium transition duration-75 ease-in-out hover:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 
   return (
-    <nav>
+    <nav className="h-[var(--nav-height)]">
       <a href="#skip" className="sr-only focus:not-sr-only">
         Skip to content
       </a>
@@ -21,7 +21,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <nav className="flex flex-1 items-center justify-end space-x-8">
+          <nav className="flex flex-1 items-center justify-end space-x-8 ">
             {sessionData && (
               <>
                 <Link href="/dashboard" className={linkStyle}>
