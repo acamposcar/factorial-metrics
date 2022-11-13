@@ -19,13 +19,13 @@ const SignIn = () => {
       <Head>
         <title>Sign in</title>
       </Head>
-      <section className="height-screen-helper flex justify-center ">
-        <div className="m-auto flex w-80 max-w-lg flex-col justify-between p-3 ">
+      <section className="mt-24 flex items-center justify-center">
+        <div className=" flex w-96 max-w-lg flex-col justify-between p-3 ">
           <div className="flex justify-center pb-12 ">
-            <h1 className="text-2xl font-bold">Sign in to Interiorify</h1>
+            <h1 className="text-2xl font-bold">Sign in to Factorial Metrics</h1>
           </div>
           <button
-            className="flex items-center justify-center gap-2 rounded-md border border-black bg-violet-50 p-2 px-4 py-2 text-xl shadow-lg hover:bg-violet-100"
+            className="flex items-center justify-center gap-2 bg-zinc-200 p-2 px-4 py-2 text-xl text-zinc-900 shadow-lg hover:bg-zinc-300"
             onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
           >
             <GitHub />
