@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --nav-height: 89px;
+}
+:root,
+html,
+body {
+  @apply bg-gradient-to-b from-black to-gray-900 text-zinc-200;
+}
+
+.height-screen-helper {
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.btn {
+  @apply rounded-lg px-6 py-3 text-lg font-medium shadow-lg;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-500;
+}
+
+.btn-secondary {
+  @apply bg-zinc-100 text-zinc-900 hover:bg-zinc-200;
+}
+
+.btn-flex {
+  @apply flex items-center justify-center;
+}
