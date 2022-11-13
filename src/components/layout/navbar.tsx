@@ -4,6 +4,10 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 
 const Navbar = () => {
   const { data: sessionData } = useSession()
+
+  const linkStyle =
+    'rounded-md p-1 font-medium text-zinc-800 transition duration-75 ease-in-out hover:text-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50'
+
   return (
     <nav>
       <a href="#skip" className="sr-only focus:not-sr-only">
@@ -19,23 +23,24 @@ const Navbar = () => {
 
           <nav className="flex flex-1 items-center justify-end space-x-8">
             {sessionData && (
-              <Link
-                href="/dashboard"
-                className={`rounded-md p-1 font-medium text-zinc-800 transition duration-75 ease-in-out hover:text-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50`}
-              >
-                Dashboard
+              <>
+                <Link href="/dashboard" className={linkStyle}>
+                  Dashboard
+                </Link>
+
+                <button
+                  className={linkStyle}
+                  onClick={() => signOut({ callbackUrl: '/signin' })}
+                >
+                  Sign out
+                </button>
+              </>
+            )}
+            {!sessionData && (
+              <Link href="/signin" className={linkStyle}>
+                Sign In
               </Link>
             )}
-            <button
-              className="rounded-md p-1 font-medium text-zinc-800 transition duration-75 ease-in-out hover:text-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-              onClick={
-                sessionData
-                  ? () => signOut()
-                  : () => signIn('github', { callbackUrl: '/dashboard' })
-              }
-            >
-              {sessionData ? 'Sign out' : 'Sign in'}
-            </button>
           </nav>
         </div>
       </div>
