@@ -15,21 +15,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Metric {
+model Value {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  name_id   String
+  metric_id String
   value     Float
   timestamp DateTime
   unit      String
-  name      Name      @relation(fields: [name_id], references: [id], onDelete: Cascade)
+  metric    Metric      @relation(fields: [metric_id], references: [id], onDelete: Cascade)
 }
 
-model Name {
+model Metric {
   id        String   @id @default(cuid())
+  userId    String
   createdAt DateTime @default(now())
-  name      String   
-  metrics   Metric[]
+  name      String 
+  isPublic  Boolean  @default(false)  
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  values    Value[]
 }
 
 // Necessary for Next auth
@@ -67,6 +70,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  metrics       Metric[]
 }
 
 model VerificationToken {
