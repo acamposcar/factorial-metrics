@@ -15,7 +15,7 @@ const Home: NextPage = () => {
             Post and visualize all your data in one place with Metrics
           </p>
 
-          <Link href="/dashboard" className="btn btn-primary">
+          <Link href="/dashboard" className="btn btn-primary px-6 py-4 text-lg">
             TRY METRICS FOR FREE
           </Link>
           <p className="mb-8 mt-3 text-sm text-zinc-400">
