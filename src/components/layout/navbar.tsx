@@ -6,7 +6,7 @@ const Navbar = () => {
   const { data: sessionData } = useSession()
 
   const linkStyle =
-    'rounded-md p-1 font-medium text-zinc-800 transition duration-75 ease-in-out hover:text-black focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50'
+    'rounded-md p-1 font-medium transition duration-75 ease-in-out hover:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
 
   return (
     <nav>
