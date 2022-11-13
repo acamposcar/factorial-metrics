@@ -50,20 +50,16 @@ const Dropzone = ({ selectedFile, handleFileSelection }: Props) => {
 
   return (
     <div
-      className="flex w-full items-center justify-center p-4 lg:p-0"
+      className="mt-3 flex w-full items-center justify-center"
       {...getRootProps()}
     >
       <div
-        className={`flex w-full flex-col items-center justify-center ${
-          !selectedFile && 'h-64'
-        } cursor-pointer rounded-lg  border-2 border-dashed bg-gray-700 hover:border-gray-500   hover:bg-gray-800 ${
+        className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg  border-2 border-dashed bg-zinc-700 hover:border-gray-500 hover:bg-gray-800 ${
           isDragActive ? 'border-bluish-500' : 'border-gray-400'
         } `}
       >
         <div
-          className={`flex ${
-            !selectedFile && 'flex-col'
-          } items-center justify-center gap-4 pt-5 pb-6`}
+          className={`flex flex-col items-center justify-center gap-4 pt-5 pb-6`}
         >
           <svg
             aria-hidden="true"
@@ -81,18 +77,22 @@ const Dropzone = ({ selectedFile, handleFileSelection }: Props) => {
             ></path>
           </svg>
           <div>
-            <p className="mb-2 text-sm text-gray-400 ">
-              <span className="font-semibold">
-                Select or drop a a file with data
-              </span>
-            </p>
-            <p className="text-xs text-gray-400">
-              CSV (MAX. {SIZE_LIMIT_MB} MB)
-            </p>
+            {selectedFile ? (
+              <p className="mb-2 text-lg text-gray-200 ">{selectedFile.name}</p>
+            ) : (
+              <>
+                <p className="mb-2 text-center text-sm font-medium text-gray-400">
+                  Select or drop a a file with data
+                </p>
+                <p className="text-center text-xs text-gray-400">
+                  CSV (MAX. {SIZE_LIMIT_MB} MB)
+                </p>
+              </>
+            )}
             <p className="mt-2 text-red-500">{error}</p>
           </div>
         </div>
-        <input {...getInputProps()} />
+        <input id="dropzone" {...getInputProps()} />
       </div>
     </div>
   )
