@@ -18,11 +18,10 @@ datasource db {
 model Value {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  metric_id String
+  metricId String
   value     Float
   timestamp DateTime
-  unit      String
-  metric    Metric      @relation(fields: [metric_id], references: [id], onDelete: Cascade)
+  metric    Metric      @relation(fields: [metricId], references: [id], onDelete: Cascade)
 }
 
 model Metric {
@@ -30,7 +29,8 @@ model Metric {
   userId    String
   createdAt DateTime @default(now())
   name      String 
-  isPublic  Boolean  @default(false)  
+  unit      String
+  isPublic  Boolean
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   values    Value[]
 }
