@@ -13,11 +13,11 @@ const Spinner = () => {
 
   return (
     <svg
-      width="100"
-      height="100"
+      width="50"
+      height="50"
       viewBox="0 0 44 44"
       xmlns="http://www.w3.org/2000/svg"
-      stroke="inheritColor"
+      stroke="black"
     >
       <g fill="none" fillRule="evenodd" strokeWidth="2">
         <circle cx="22" cy="22" r="1">
