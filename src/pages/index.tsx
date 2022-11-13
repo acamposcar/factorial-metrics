@@ -1,13 +1,7 @@
 import { type NextPage } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
-import { signIn, signOut, useSession } from 'next-auth/react'
-
-import { trpc } from '../utils/trpc'
 
 const Home: NextPage = () => {
-  const hello = trpc.example.hello.useQuery({ text: 'from tRPC' })
-
   return (
     <section className="height-screen-helper flex items-center">
       <div className="mx-auto -mt-16 max-w-6xl px-5 sm:px-6">
