@@ -4,12 +4,12 @@ import { router, protectedProcedure } from '../trpc'
 
 export const metricRouter = router({
   getMetrics: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.metric.findMany()
+    return ctx.prisma.metricItem.findMany()
   }),
   getMetric: protectedProcedure
     .input(z.object({ metricId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.metric.findUnique({
+      return ctx.prisma.metricItem.findUnique({
         where: {
           id: input.metricId
         },
@@ -26,8 +26,8 @@ export const metricRouter = router({
         isPublic: z.boolean()
       })
     )
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.metric.create({
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.metricItem.create({
         data: {
           name: input.name,
           unit: input.unit,
@@ -42,8 +42,8 @@ export const metricRouter = router({
         metricId: z.string()
       })
     )
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.metric.delete({
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.metricItem.delete({
         where: {
           id: input.metricId
         }
