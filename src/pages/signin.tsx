@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import GitHub from '../components/icons/github'
 import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
-import LoadingSpinner from '../components/loading-spinner'
+import LoadingSpinner from '../components/ui/loading-spinner'
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
