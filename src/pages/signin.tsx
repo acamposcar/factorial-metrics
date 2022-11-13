@@ -1,10 +1,12 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import GitHub from '../components/icons/github'
 import { signIn, useSession } from 'next-auth/react'
 import Head from 'next/head'
+import LoadingSpinner from '../components/loading-spinner'
 
 const SignIn = () => {
+  const [loading, setLoading] = useState(false)
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -13,6 +15,11 @@ const SignIn = () => {
       router.replace('/dashboard')
     }
   }, [session, router])
+
+  const handleSignIn = () => {
+    setLoading(true)
+    signIn('github', { callbackUrl: '/dashboard' })
+  }
 
   return (
     <>
@@ -24,11 +31,8 @@ const SignIn = () => {
           <div className="flex justify-center pb-12 ">
             <h1 className="text-3xl font-bold">Sign in to Metrics</h1>
           </div>
-          <button
-            className="btn btn-secondary btn-flex"
-            onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
-          >
-            <GitHub />
+          <button className="btn btn-secondary btn-flex" onClick={handleSignIn}>
+            {loading ? <LoadingSpinner /> : <GitHub />}
             <span className="ml-2">Continue with Github</span>
           </button>
         </div>
