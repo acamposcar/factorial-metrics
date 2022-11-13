@@ -1,12 +1,20 @@
 import type { ReactNode } from 'react'
 import Navbar from './navbar'
 import Head from 'next/head'
+import { useSession } from 'next-auth/react'
+import Loading from '../loading'
 
 interface Props {
   children: ReactNode
 }
 
 const Layout = ({ children }: Props) => {
+  const { status } = useSession()
+
+  if (status === 'loading') {
+    return <Loading />
+  }
+
   const title = 'Factorial Metrics'
 
   const host = process.env.VERCEL_URL
