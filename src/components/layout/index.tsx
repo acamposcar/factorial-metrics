@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import Navbar from './navbar'
 import Head from 'next/head'
 import { useSession } from 'next-auth/react'
-import Loading from '../loading'
+import Loading from '../ui/loading'
 
 interface Props {
   children: ReactNode
