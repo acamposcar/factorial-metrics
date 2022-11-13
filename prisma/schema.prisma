@@ -21,16 +21,16 @@ model Value {
   metricId String
   value     Float
   timestamp DateTime
-  metric    Metric      @relation(fields: [metricId], references: [id], onDelete: Cascade)
+  metric    MetricItem     @relation(fields: [metricId], references: [id], onDelete: Cascade)
 }
 
-model Metric {
-  id        String   @id @default(cuid())
+model MetricItem {
+  id        String    @id @default(cuid())
   userId    String
-  createdAt DateTime @default(now())
   name      String 
   unit      String
   isPublic  Boolean
+  createdAt DateTime  @default(now())
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   values    Value[]
 }
@@ -70,7 +70,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  metrics       Metric[]
+  metrics       MetricItem[]
 }
 
 model VerificationToken {
