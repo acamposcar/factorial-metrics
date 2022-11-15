@@ -1,5 +1,6 @@
 import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import LoadingSpinner from './loading-spinner'
 
 interface Props {
   children: React.ReactNode
@@ -9,6 +10,7 @@ interface Props {
   buttonText: string
   handleClick: () => void
   handleClose: () => void
+  isLoading: boolean
 }
 
 const Modal = ({
@@ -18,7 +20,8 @@ const Modal = ({
   buttonText,
   description,
   handleClick,
-  handleClose
+  handleClose,
+  isLoading
 }: Props) => {
   const cancelButtonRef = useRef(null)
 
@@ -75,9 +78,10 @@ const Modal = ({
                 <div className=" items-center gap-2 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-flex"
                     onClick={handleClick}
                   >
+                    {isLoading && <LoadingSpinner />}
                     {buttonText}
                   </button>
                   <button
