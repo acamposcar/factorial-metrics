@@ -11,6 +11,7 @@ const SignIn = () => {
   const router = useRouter()
 
   useEffect(() => {
+    // If authenticated, redirect to dashboard
     if (session) {
       router.replace('/dashboard')
     }
