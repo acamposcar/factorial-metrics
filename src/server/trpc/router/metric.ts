@@ -14,7 +14,12 @@ export const metricRouter = router({
           id: input.metricId
         },
         include: {
-          values: true
+          values: {
+            select: {
+              timestamp: true,
+              value: true
+            }
+          }
         }
       })
     }),
@@ -27,7 +32,7 @@ export const metricRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.metricItem.create({
+      return ctx.prisma.metricItem.create({
         data: {
           name: input.name,
           unit: input.unit,
