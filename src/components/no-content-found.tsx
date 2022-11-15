@@ -8,12 +8,7 @@ interface Props {
 const NoContentFound = ({ children }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <Image
-        src={NoContentSVG}
-        width={200}
-        height={200}
-        alt="No content found"
-      />
+      <Image src={NoContentSVG} priority width={250} alt="No content found" />
       {children}
     </div>
   )
