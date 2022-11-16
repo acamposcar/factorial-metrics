@@ -1,139 +1,202 @@
-import { useRef, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useState } from 'react'
 import { trpc } from '../utils/trpc'
 import Dropzone from './dropzone'
 import Modal from './ui/modal'
 import Papa from 'papaparse'
+import { toast } from 'react-toastify'
 
+interface ParseValues {
+  value: number
+  timestamp: Date
+}
 const CreateMetric = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [parseError, setParseError] = useState(false)
   // The user must select if he wants to create only one value for the metric or
   // upload a CSV file with multiple values
   const [isIndividualMetric, setIsIndividualMetric] = useState(false)
-  const nameRef = useRef<HTMLInputElement>(null)
-  const unitRef = useRef<HTMLInputElement>(null)
-  const valueRef = useRef<HTMLInputElement>(null)
-  const timeRef = useRef<HTMLInputElement>(null)
+  const [csvValues, setCsvValues] = useState<ParseValues[]>([])
+
+  const [name, setName] = useState<string | undefined>()
+  const [unit, setUnit] = useState<string | undefined>()
+  const [value, setValue] = useState<number | undefined>()
+  const [timestamp, setTimestamp] = useState<Date | undefined>()
   const [selectedFile, setSelectedFile] = useState<File | undefined>()
 
+  const [formValidationError, setFormValidationError] = useState(false)
   const utils = trpc.useContext()
-  const setValue = trpc.value.setValue.useMutation({
+  const createIndividualValue = trpc.value.setValue.useMutation({
     onSuccess: async (metricId) => {
       utils.metric.getMetric.invalidate({ metricId })
     },
     onError: () => {
-      toast.error('Error setting the values. Please, try again later')
+      toast.error('Error setting the values. Please, try again')
     }
   })
 
-  const setMultipleValues = trpc.value.setMultipleValues.useMutation({
+  const createMultipleValues = trpc.value.setMultipleValues.useMutation({
     onSuccess: async () => {
       utils.metric.getMetrics.invalidate()
     },
     onError: () => {
-      toast.error('Error setting the values. Please, try again later')
+      toast.error('Error setting the values. Please, try again')
     }
   })
 
   const createMetric = trpc.metric.createMetric.useMutation({
     onSuccess: async ({ id }) => {
       utils.metric.getMetrics.invalidate()
-      handleSetValues(id)
+      // This must be called here because the mutate function
+      // has no return, and we need the metric id
+      handleCreateValues(id)
       handleModalClose()
     },
     onError: () => {
-      toast.error('Error creating the metric. Please, try again later')
+      toast.error('Error creating the metric. Please, try again')
     }
   })
 
-  const handleSetValues = async (metricId: string) => {
+  const handleCreateValues = async (metricId: string) => {
+    setFormValidationError(false)
+
     if (isIndividualMetric) {
-      await setValue.mutate({
+      // If the user wants to create only one value for the metric
+      if (!metricId || !value || !timestamp) {
+        setFormValidationError(true)
+        return
+      }
+      await createIndividualValue.mutate({
         metricId,
-        value: parseFloat(valueRef.current?.value),
-        timestamp: new Date(timeRef.current?.value)
+        value,
+        timestamp
       })
     } else {
-      const values = parseCSV(metricId)
-      if (values) {
-        setMultipleValues.mutate({
-          values,
-          metricId
-        })
+      // Multiple values - the user is uploading a CSV file
+      if (!metricId || !csvValues || csvValues.length === 0) {
+        setFormValidationError(true)
+        return
       }
+
+      createMultipleValues.mutate({
+        values: [...csvValues].map((obj) => ({
+          ...obj,
+          metricId
+        })),
+        metricId
+      })
     }
   }
 
-  const parseCSV = (metricId: string) => {
+  const parseCSV = () => {
     // Parse the CSV file and return an array of values
+    setParseError(false)
     if (!selectedFile) return
 
-    try {
-      let values: (
-        | { metricId: string; value: number; timestamp: Date }
-        | undefined
-      )[] = []
-      Papa.parse(selectedFile, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function (results) {
-          // Get the values from the CSV file
-          const data = results.data as { [key: string]: string }[]
+    let values: ParseValues[] = []
+    Papa.parse(selectedFile, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        // Get the values from the CSV file
+        const data = results.data as { [key: string]: string }[]
 
-          // Transform the values to the correct format
-          values = data.map((row) => {
-            if (row.value && row.timestamp) {
-              return {
-                metricId,
-                value: parseFloat(row.value),
-                timestamp: new Date(row.timestamp)
-              }
-            }
-          })
-        }
-      })
-      return values
-    } catch (e) {
-      // toast.error(
-      //   'Error reading the CSV file. Please, try again with another file'
-      // )
-      console.log(e)
-    }
+        // Transform the values to the correct format
+        values = data.map((row) => {
+          if (!row.value || !row.timestamp) {
+            throw new Error('Invalid CSV file')
+          }
+          return {
+            value: parseFloat(row.value),
+            timestamp: new Date(row.timestamp)
+          }
+        })
+      }
+    })
+    return values
   }
 
   const handleFileSelection = (file: File) => {
+    // Parse the CSV file and check if it is valid
+    // If it is valid, set the values to the state
+    let values: ParseValues[] | undefined = []
+    try {
+      values = parseCSV()
+      if (!values || values.length === 0) {
+        throw new Error('No data found in the CSV')
+      }
+      setCsvValues(values)
+    } catch (error) {
+      setParseError(true)
+      return
+    }
     setSelectedFile(file)
   }
 
-  const handleModalClose = () => {
-    setModalIsOpen(false)
-    setSelectedFile(undefined)
-  }
+  const handleCreateMetric = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setFormValidationError(false)
+    // TODO Handle Errors
+    const noNameNoUnit = !name || !unit
+    const noValueNoTimestamp = !value || !timestamp
+    const noCsvValues = !csvValues || csvValues.length === 0
 
-  const handleCreateMetric = () => {
+    // Validate form
+    if (noNameNoUnit) {
+      setFormValidationError(true)
+      return
+    }
+    if (isIndividualMetric && noValueNoTimestamp) {
+      setFormValidationError(true)
+      return
+    }
+    if (!isIndividualMetric && noCsvValues) {
+      setFormValidationError(true)
+      return
+    }
+
     createMetric.mutate({
-      name: nameRef.current?.value,
-      unit: unitRef.current?.value,
+      name,
+      unit,
       isPublic: false
     })
   }
 
+  const handleModalClose = () => {
+    // Reset the state when the modal is closed
+    setModalIsOpen(false)
+    setSelectedFile(undefined)
+    setCsvValues([])
+    setName(undefined)
+    setUnit(undefined)
+    setValue(undefined)
+    setTimestamp(undefined)
+    setParseError(false)
+    setFormValidationError(false)
+  }
+
   return (
     <>
-      <button
-        className="btn btn-primary mt-4"
-        onClick={() => setModalIsOpen(true)}
-      >
-        CREATE METRIC
-      </button>
+      <div className="mt-4 flex justify-center">
+        <button
+          className="btn btn-primary"
+          onClick={() => setModalIsOpen(true)}
+        >
+          CREATE METRIC
+        </button>
+      </div>
       <Modal
         isOpen={modalIsOpen}
         title="Create a new metric"
         buttonText="Create Metric"
-        handleClick={handleCreateMetric}
         handleClose={handleModalClose}
-        isLoading={createMetric.isLoading || setValue.isLoading}
+        isLoading={
+          createMetric.isLoading ||
+          createIndividualValue.isLoading ||
+          createMultipleValues.isLoading
+        }
       >
-        <form className="mt-4">
+        <form id="create" className="mt-4" onSubmit={handleCreateMetric}>
           <div className="mb-6">
             <label htmlFor="name" className="mb-2 block text-sm font-medium  ">
               Name
@@ -141,7 +204,8 @@ const CreateMetric = () => {
             <input
               type="text"
               id="name"
-              ref={nameRef}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
               placeholder="e.g. Google Stock"
               required
@@ -154,7 +218,8 @@ const CreateMetric = () => {
             <input
               type="text"
               id="unit"
-              ref={unitRef}
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
               className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
               placeholder="e.g. $"
               required
@@ -202,6 +267,7 @@ const CreateMetric = () => {
               <Dropzone
                 selectedFile={selectedFile}
                 handleFileSelection={handleFileSelection}
+                parseError={parseError}
               />
             </div>
           )}
@@ -217,7 +283,8 @@ const CreateMetric = () => {
                 <input
                   type="number"
                   id="value"
-                  ref={valueRef}
+                  value={value}
+                  onChange={(e) => setValue(parseFloat(e.target.value))}
                   className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="e.g. 107.57"
                   required
@@ -233,7 +300,7 @@ const CreateMetric = () => {
                 <input
                   type="datetime-local"
                   id="time"
-                  ref={timeRef}
+                  onChange={(e) => setTimestamp(new Date(e.target.value))}
                   className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="e.g. 107.57"
                   required
@@ -243,6 +310,12 @@ const CreateMetric = () => {
             </>
           )}
         </form>
+        {formValidationError && (
+          <div className="mt-4 text-red-500">
+            There was an error with your form. Please check the fields and try
+            again
+          </div>
+        )}
       </Modal>
     </>
   )
