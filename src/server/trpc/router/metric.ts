@@ -4,7 +4,11 @@ import { router, protectedProcedure } from '../trpc'
 
 export const metricRouter = router({
   getMetrics: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.metricItem.findMany()
+    return ctx.prisma.metricItem.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
   }),
   getMetric: protectedProcedure
     .input(z.object({ metricId: z.string() }))
