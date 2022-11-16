@@ -13,15 +13,15 @@ const Navbar = () => {
       <a href="#skip" className="sr-only focus:not-sr-only">
         Skip to content
       </a>
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="align-center relative flex flex-row justify-between py-4 md:py-6">
+      <div className="mx-auto  px-10">
+        <div className="align-center relative flex flex-row items-center py-5">
           <div className="flex flex-1 items-center gap-3">
             <Link href="/" className="hover:scale-105" aria-label="Logo">
               <Logo />
             </Link>
           </div>
 
-          <nav className="flex flex-1 items-center justify-end space-x-8 ">
+          <nav className="flex flex-1 items-center justify-end space-x-8">
             {sessionData && (
               <>
                 <Link href="/dashboard" className={linkStyle}>
