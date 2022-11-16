@@ -6,30 +6,33 @@ import { useCallback } from 'react'
 interface Props {
   selectedFile: File | undefined
   handleFileSelection: (file: File) => void
+  parseError: boolean
 }
 
-const Dropzone = ({ selectedFile, handleFileSelection }: Props) => {
-  const [error, setError] = useState<string | undefined>()
+const Dropzone = ({ selectedFile, handleFileSelection, parseError }: Props) => {
+  const [validationError, setValidationError] = useState<string | undefined>()
   const SIZE_LIMIT_MB = 2
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      setError(undefined)
+      setValidationError(undefined)
       // If there are rejected files, show the first error
       if (rejectedFiles[0] && rejectedFiles[0].errors[0]) {
         if (rejectedFiles[0].errors[0].code === 'file-too-large') {
-          setError(`Please upload a file smaller than ${SIZE_LIMIT_MB}MB.`)
+          setValidationError(
+            `Please upload a file smaller than ${SIZE_LIMIT_MB}MB.`
+          )
           return
         }
         if (rejectedFiles[0].errors[0].code === 'file-invalid-type') {
-          setError(`Please upload a CSV file.`)
+          setValidationError(`Please upload a CSV file.`)
           return
         }
         if (rejectedFiles[0].errors[0].code === 'too-many-files-') {
-          setError(`Please upload only one file.`)
+          setValidationError(`Please upload only one file.`)
           return
         }
-        setError(rejectedFiles[0].errors[0].message)
+        setValidationError(rejectedFiles[0].errors[0].message)
         return
       }
       const file = acceptedFiles[0]
@@ -81,18 +84,24 @@ const Dropzone = ({ selectedFile, handleFileSelection }: Props) => {
               <p className="mb-2 text-lg text-gray-200 ">{selectedFile.name}</p>
             ) : (
               <>
-                <p className="mb-2 text-center text-sm font-medium text-gray-400">
-                  Select or drop a a file with data
+                <p className="mb-4 text-center text-sm  text-gray-400">
+                  Select or drop a <span className="font-bold">CSV</span> file
+                  with <br /> <span className="font-bold">timestamp</span> and{' '}
+                  <span className="font-bold">value</span> columns
                 </p>
                 <p className="text-center text-xs text-gray-400">
-                  CSV (MAX. {SIZE_LIMIT_MB} MB)
+                  (MAX. {SIZE_LIMIT_MB} MB)
                 </p>
               </>
             )}
-            <p className="mt-2 text-red-500">{error}</p>
+            <p className="mt-4 text-red-500">{validationError}</p>
+            <p className="mt-4 text-red-500">
+              {parseError &&
+                'Error parsing the CSV file. Please check it is correct'}
+            </p>
           </div>
         </div>
-        <input id="dropzone" {...getInputProps()} />
+        <input id="dropzone" required {...getInputProps()} />
       </div>
     </div>
   )
