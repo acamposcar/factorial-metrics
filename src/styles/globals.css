@@ -2,21 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --nav-height: 89px;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
+
+:root {
+  color-scheme: dark;
+  --nav-height: 80px;
+}
+/* *:focus {
+  @apply outline-none ring-2 ring-bluish-500 ring-opacity-50;
+} */
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Helvetica Neue',
+    'Helvetica', sans-serif;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 :root,
 html,
 body {
   @apply bg-gradient-to-b from-black to-gray-900 text-zinc-200;
 }
 
-.height-screen-helper {
-  min-height: calc(100vh - var(--nav-height));
+@layer base {
+  .height-screen-helper {
+    min-height: calc(100vh - var(--nav-height) - 1px);
+  }
 }
-
 .btn {
-  @apply rounded-lg px-6 py-3 text-lg font-medium shadow-lg;
+  @apply rounded-lg px-4 py-2 font-medium shadow-lg;
 }
 
 .btn-primary {
