@@ -1,6 +1,8 @@
-const Loading = () => {
+const Loading = ({ className = 'h-screen' }: { className?: string }) => {
   return (
-    <div className="animate-fade-in-delay stroke-default flex h-screen flex-1 items-center justify-center p-8">
+    <div
+      className={`animate-fade-in-delay stroke-default flex  flex-1 items-center justify-center p-8 ${className}`}
+    >
       <Spinner />
     </div>
   )
