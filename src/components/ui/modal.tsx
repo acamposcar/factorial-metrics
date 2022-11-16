@@ -8,7 +8,6 @@ interface Props {
   description?: string
   isOpen: boolean
   buttonText: string
-  handleClick: () => void
   handleClose: () => void
   isLoading: boolean
 }
@@ -19,7 +18,6 @@ const Modal = ({
   title,
   buttonText,
   description,
-  handleClick,
   handleClose,
   isLoading
 }: Props) => {
@@ -46,7 +44,7 @@ const Modal = ({
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full  items-center justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -75,11 +73,11 @@ const Modal = ({
                     </div>
                   </div>
                 </div>
-                <div className=" items-center gap-2 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className=" mb-4 flex items-center justify-end gap-2 px-4 py-3 sm:px-6">
                   <button
-                    type="button"
+                    form="create"
+                    type="submit"
                     className="btn btn-primary btn-flex"
-                    onClick={handleClick}
                   >
                     {isLoading && <LoadingSpinner />}
                     {buttonText}
