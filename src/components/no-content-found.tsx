@@ -2,14 +2,18 @@ import Image from 'next/image'
 import NoContentSVG from '../assets/not-found.svg'
 
 interface Props {
-  children: React.ReactNode
+  children?: React.ReactNode
+  title: string
 }
 
-const NoContentFound = ({ children }: Props) => {
+const NoContentFound = ({ children, title }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <Image src={NoContentSVG} priority width={250} alt="No content found" />
-      {children}
+    <div className="flex flex-col items-center justify-center gap-4 text-center lg:mt-16">
+      <Image src={NoContentSVG} priority width={150} alt="No content found" />
+      <h2 className="text-default mt-4 text-lg sm:text-xl">{title}</h2>
+      {children && (
+        <div className="text-offset text-center text-sm">{children}</div>
+      )}
     </div>
   )
 }
