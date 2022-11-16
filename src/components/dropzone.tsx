@@ -101,7 +101,7 @@ const Dropzone = ({ selectedFile, handleFileSelection, parseError }: Props) => {
             </p>
           </div>
         </div>
-        <input id="dropzone" required {...getInputProps()} />
+        <input id="dropzone" {...getInputProps()} />
       </div>
     </div>
   )
