@@ -2,8 +2,11 @@ import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCNext } from '@trpc/next'
 import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server'
 import superjson from 'superjson'
-
+import { toast } from 'react-toastify'
+import { QueryCache } from '@tanstack/react-query'
+import { TRPCClientError } from '@trpc/client'
 import { type AppRouter } from '../server/trpc/router/_app'
+import { AnyAaaaRecord } from 'dns'
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') return '' // browser should use relative url
@@ -24,7 +27,24 @@ export const trpc = createTRPCNext<AppRouter>({
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`
         })
-      ]
+      ],
+      queryClientConfig: {
+        defaultOptions: { queries: { retry: 0, refetchOnWindowFocus: false } },
+        queryCache: new QueryCache({
+          onError: (error, query) => {
+            // show error for background refetches
+            if (query.state.data !== undefined) {
+              toast.error('Ooops! Something went wrong')
+              // TODO
+              // if (error instanceof TRPCClientError) {
+              //   toast.error(`Something went wrong: ${error.message}`)
+              // } else {
+              //   toast.error('Something went wrong')
+              // }
+            }
+          }
+        })
+      }
     }
   },
   ssr: false
