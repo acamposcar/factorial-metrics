@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react'
 import { trpc } from '../utils/trpc'
 import { useRouter } from 'next/router'
 import Loading from '../components/ui/loading'
-import MetricsTable from '../components/metrics-table'
+import MetricsList from '../components/metrics-list'
 import CreateMetric from '../components/create-metric'
 import VisualizeMetric from '../components/visualize-metric'
 import { useState } from 'react'
@@ -13,7 +13,7 @@ import { useState } from 'react'
 const Dashboard: NextPage = () => {
   const { data: session } = useSession()
   const router = useRouter()
-  const [metricData, setMetricData] = useState<
+  const [selectedMetric, setSelectedMetric] = useState<
     { name: string; id: string } | undefined
   >()
 
@@ -28,16 +28,31 @@ const Dashboard: NextPage = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <section className="height-screen-helper flex items-center">
-        <div className="mx-auto -mt-16 max-w-6xl px-5 sm:px-6">
-          <div className="sm:flex sm:flex-col sm:items-center">
-            <CreateMetric />
-            <MetricsTable setMetricData={setMetricData} />
-            {metricData && (
-              <VisualizeMetric
-                metricId={metricData.id}
-                metricName={metricData.name}
+      <section className="height-screen-helper mx-auto flex border-t border-zinc-400">
+        <div className="flex flex-1 flex-col lg:flex-row">
+          <div className="lg:height-screen-helper h-[40vh] overflow-y-scroll px-2 py-4 lg:w-[250px]  lg:px-4 lg:py-6">
+            <CreateMetric setSelectedMetric={setSelectedMetric} />
+            <div className=" ">
+              <MetricsList
+                setSelectedMetric={setSelectedMetric}
+                selectedMetric={selectedMetric}
               />
+            </div>
+          </div>
+
+          <div className="flex-1 bg-zinc-800 py-4 px-2 lg:py-6 lg:px-10">
+            {selectedMetric && (
+              <VisualizeMetric
+                metricId={selectedMetric.id}
+                metricName={selectedMetric.name}
+              />
+            )}
+            {!selectedMetric && (
+              <div className="flex h-full flex-col items-center justify-center">
+                <h1 className="text-2xl font-bold text-zinc-400">
+                  Select a metric to visualize
+                </h1>
+              </div>
             )}
           </div>
         </div>
