@@ -18,9 +18,7 @@ const Home: NextPage = () => {
           <Link href="/dashboard" className="btn btn-primary px-6 py-4 text-lg">
             TRY METRICS FOR FREE
           </Link>
-          <p className="mb-8 mt-3 text-sm text-zinc-400">
-            No credit card required
-          </p>
+          <p className="mb-8 mt-3 text-sm text-zinc-400">Yes, it is free</p>
         </div>
       </div>
     </section>
