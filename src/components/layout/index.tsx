@@ -15,13 +15,9 @@ const Layout = ({ children }: Props) => {
     return <Loading />
   }
 
-  const title = 'Factorial Metrics'
+  const title = 'Metrics'
 
-  const host = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : `http://localhost:${process.env.PORT ?? 3000}`
-  const description =
-    'Post and visualize your data in a usable way with Factorial Metrics'
+  const description = 'Post and analyze your data in a usable way with Metrics'
 
   return (
     <>
@@ -29,19 +25,8 @@ const Layout = ({ children }: Props) => {
         <title>{title}</title>
         <meta name="robots" content="follow, index" />
         <meta name="description" content={description} />
-        <meta name="theme-color" content="#ffffff" />
-        <link href="/favicon.ico" rel="shortcut icon" />
-        <meta name="og:title" content={title} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="website" />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={`${host}/social.jpg`} />
-        <meta property="og:url" content={host} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@factorialmetrics" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={`${host}/social.jpg`} />
+        <meta name="theme-color" content="#000000" />
+        <link href="/favicon.svg" rel="shortcut icon" />
       </Head>
       <Navbar />
       <main id="skip">{children}</main>
