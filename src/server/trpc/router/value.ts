@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { router, protectedProcedure } from '../trpc'
@@ -12,6 +13,16 @@ export const valueRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const metricOwner = await ctx.prisma.metricItem.findUnique({
+        where: { id: input.metricId },
+        select: { userId: true }
+      })
+      if (metricOwner?.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to set value for this metric'
+        })
+      }
       await ctx.prisma.value.create({
         data: {
           metricId: input.metricId,
@@ -35,6 +46,16 @@ export const valueRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const metricOwner = await ctx.prisma.metricItem.findUnique({
+        where: { id: input.metricId },
+        select: { userId: true }
+      })
+      if (metricOwner?.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized to set value for this metric'
+        })
+      }
       await ctx.prisma.value.createMany({
         data: input.values
       })
