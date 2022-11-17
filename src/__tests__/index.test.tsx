@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Home from '../pages/index'
 import '@testing-library/jest-dom'
+import { expect } from '@jest/globals'
 
 describe('Home', () => {
   it('renders home', () => {
@@ -10,6 +11,6 @@ describe('Home', () => {
       name: 'Visualize metrics the easy way'
     })
 
-    expect(heading).toBeInTheDocument()
+    expect(heading).toBeTruthy()
   })
 })

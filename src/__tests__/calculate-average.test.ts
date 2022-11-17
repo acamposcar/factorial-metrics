@@ -1,5 +1,5 @@
 import calculateAverage, { GroupBy } from '../utils/calculate-average'
-
+import { expect, test } from '@jest/globals'
 // ***********************
 // Test average by days
 // ***********************
