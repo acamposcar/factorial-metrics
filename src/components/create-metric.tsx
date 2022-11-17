@@ -221,7 +221,6 @@ const CreateMetric = ({ setSelectedMetric }: Props) => {
               onChange={(e) => setUnit(e.target.value)}
               className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
               placeholder="e.g. $"
-              required
             />
           </div>
           <div className="mb-6">
