@@ -5,7 +5,6 @@ import Dropzone from './dropzone'
 import Modal from './ui/modal'
 import Papa from 'papaparse'
 import { toast } from 'react-toastify'
-import { NONAME } from 'dns'
 
 interface ParseValues {
   value: number
