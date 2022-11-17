@@ -8,8 +8,14 @@ interface Props {
 
 const NoContentFound = ({ children, title }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 text-center lg:mt-16">
-      <Image src={NoContentSVG} priority width={150} alt="No content found" />
+    <div className="mt-4 flex flex-col items-center justify-center gap-4 text-center lg:mt-16">
+      <Image
+        src={NoContentSVG}
+        priority
+        width={150}
+        alt="No content found"
+        className="hidden lg:block"
+      />
       <h2 className="text-default mt-4 text-lg sm:text-xl">{title}</h2>
       {children && (
         <div className="text-offset text-center text-sm">{children}</div>
