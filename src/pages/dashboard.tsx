@@ -27,7 +27,10 @@ const Dashboard: NextPage = () => {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <section className="height-screen-helper mx-auto flex border-t border-zinc-400">
+      <section
+        id="#dashboard"
+        className="height-screen-helper mx-auto flex border-t border-zinc-400"
+      >
         <div className="flex flex-1 flex-col lg:flex-row">
           <div className="lg:height-screen-helper h-[40vh] overflow-y-auto px-2 py-4 lg:w-[300px] lg:overflow-y-scroll lg:px-4 lg:py-6">
             <CreateMetric setSelectedMetric={setSelectedMetric} />

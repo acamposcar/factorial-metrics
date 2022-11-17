@@ -35,7 +35,11 @@ const SignIn = () => {
 
             <h1 className="mt-8 text-3xl font-bold">Sign in to Metrics</h1>
           </div>
-          <button className="btn btn-secondary btn-flex" onClick={handleSignIn}>
+          <button
+            id="github"
+            className="btn btn-secondary btn-flex"
+            onClick={handleSignIn}
+          >
             {loading ? <LoadingSpinner /> : <GitHub />}
             <span className="ml-2 text-lg">Continue with Github</span>
           </button>
