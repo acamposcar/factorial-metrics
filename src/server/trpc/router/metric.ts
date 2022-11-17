@@ -31,7 +31,7 @@ export const metricRouter = router({
     .input(
       z.object({
         name: z.string(),
-        unit: z.string(),
+        unit: z.string().optional(),
         isPublic: z.boolean()
       })
     )
@@ -39,7 +39,7 @@ export const metricRouter = router({
       return ctx.prisma.metricItem.create({
         data: {
           name: input.name,
-          unit: input.unit,
+          unit: input.unit ?? null,
           userId: ctx.session.user.id,
           isPublic: input.isPublic
         }

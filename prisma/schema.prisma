@@ -28,7 +28,7 @@ model MetricItem {
   id        String    @id @default(cuid())
   userId    String
   name      String 
-  unit      String
+  unit      String?
   isPublic  Boolean
   createdAt DateTime  @default(now())
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)

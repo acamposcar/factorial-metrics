@@ -5,6 +5,7 @@ import Dropzone from './dropzone'
 import Modal from './ui/modal'
 import Papa from 'papaparse'
 import { toast } from 'react-toastify'
+import { NONAME } from 'dns'
 
 interface ParseValues {
   value: number
@@ -133,12 +134,12 @@ const CreateMetric = ({ setSelectedMetric }: Props) => {
   const handleCreateMetric = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setFormValidationError(false)
-    const noNameNoUnit = !name || !unit
+    const noName = !name
     const noValueNoTimestamp = !value || !timestamp
     const noCsvValues = !csvValues || csvValues.length === 0
 
     // Validate form
-    if (noNameNoUnit) {
+    if (noName) {
       setFormValidationError(true)
       return
     }
