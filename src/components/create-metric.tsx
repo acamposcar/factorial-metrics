@@ -64,6 +64,8 @@ const CreateMetric = ({ setSelectedMetric }: Props) => {
   })
 
   const handleCreateValues = (metricId: string) => {
+    // Very basic validation on frontend, real validation made on backend with zod
+    // No time to do it properly here
     setFormValidationError(false)
 
     if (isIndividualMetric) {
@@ -137,7 +139,8 @@ const CreateMetric = ({ setSelectedMetric }: Props) => {
     const noValueNoTimestamp = !value || !timestamp
     const noCsvValues = !csvValues || csvValues.length === 0
 
-    // Validate form
+    // Very basic validation on frontend, real validation made on backend with zod
+    // No time to do it properly
     if (noName) {
       setFormValidationError(true)
       return
