@@ -5,6 +5,9 @@ import { router, protectedProcedure } from '../trpc'
 export const metricRouter = router({
   getMetrics: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.metricItem.findMany({
+      where: {
+        userId: ctx.session.user.id
+      },
       orderBy: {
         createdAt: 'desc'
       }
@@ -13,8 +16,9 @@ export const metricRouter = router({
   getMetric: protectedProcedure
     .input(z.object({ metricId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.metricItem.findUnique({
+      return ctx.prisma.metricItem.findFirst({
         where: {
+          userId: ctx.session.user.id,
           id: input.metricId
         },
         include: {
@@ -52,8 +56,9 @@ export const metricRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.metricItem.delete({
+      return await ctx.prisma.metricItem.deleteMany({
         where: {
+          userId: ctx.session.user.id,
           id: input.metricId
         }
       })
