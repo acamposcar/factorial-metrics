@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Logo from '../icons/logo'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 const Navbar = () => {
   const { data: sessionData } = useSession()
@@ -17,7 +17,7 @@ const Navbar = () => {
         <div className="align-center relative flex flex-row items-center py-5">
           <div className="flex flex-1 items-center gap-3">
             <Link href="/" className="hover:scale-105" aria-label="Logo">
-              <Logo />
+              <Logo width={30} height={45} />
             </Link>
           </div>
 
