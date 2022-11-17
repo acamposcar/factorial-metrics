@@ -73,7 +73,7 @@ const Modal = ({
                     </div>
                   </div>
                 </div>
-                <div className=" mb-4 flex items-center justify-end gap-2 px-4 py-3 sm:px-6">
+                <div className=" mb-4 flex flex-row-reverse items-center justify-start gap-2 px-4 py-3 sm:px-6">
                   <button
                     form="create"
                     type="submit"
