@@ -10,7 +10,10 @@ interface ParseValues {
   value: number
   timestamp: Date
 }
-const CreateMetric = () => {
+interface Props {
+  setSelectedMetric: ({ name, id }: { name: string; id: string }) => void
+}
+const CreateMetric = ({ setSelectedMetric }: Props) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [parseError, setParseError] = useState(false)
   // The user must select if he wants to create only one value for the metric or
@@ -26,9 +29,11 @@ const CreateMetric = () => {
 
   const [formValidationError, setFormValidationError] = useState(false)
   const utils = trpc.useContext()
+
   const createIndividualValue = trpc.value.setValue.useMutation({
     onSuccess: async (metricId) => {
-      utils.metric.getMetric.invalidate({ metricId })
+      await utils.metric.getMetric.invalidate({ metricId })
+      handleModalClose()
     },
     onError: () => {
       toast.error('Error setting the values. Please, try again')
@@ -36,8 +41,9 @@ const CreateMetric = () => {
   })
 
   const createMultipleValues = trpc.value.setMultipleValues.useMutation({
-    onSuccess: async () => {
-      utils.metric.getMetrics.invalidate()
+    onSuccess: async (metricId) => {
+      await utils.metric.getMetric.invalidate({ metricId })
+      handleModalClose()
     },
     onError: () => {
       toast.error('Error setting the values. Please, try again')
@@ -45,19 +51,19 @@ const CreateMetric = () => {
   })
 
   const createMetric = trpc.metric.createMetric.useMutation({
-    onSuccess: async ({ id }) => {
+    onSuccess: ({ id }) => {
       utils.metric.getMetrics.invalidate()
+      setSelectedMetric({ name: name ?? '', id })
       // This must be called here because the mutate function
       // has no return, and we need the metric id
       handleCreateValues(id)
-      handleModalClose()
     },
     onError: () => {
       toast.error('Error creating the metric. Please, try again')
     }
   })
 
-  const handleCreateValues = async (metricId: string) => {
+  const handleCreateValues = (metricId: string) => {
     setFormValidationError(false)
 
     if (isIndividualMetric) {
@@ -66,7 +72,7 @@ const CreateMetric = () => {
         setFormValidationError(true)
         return
       }
-      await createIndividualValue.mutate({
+      createIndividualValue.mutate({
         metricId,
         value,
         timestamp
@@ -88,55 +94,45 @@ const CreateMetric = () => {
     }
   }
 
-  const parseCSV = () => {
-    // Parse the CSV file and return an array of values
+  const handleFileSelection = (file: File) => {
+    // Parse the CSV file and check if it is valid
+    // If it is valid, set the values to the state
     setParseError(false)
-    if (!selectedFile) return
+    setSelectedFile(undefined)
 
-    let values: ParseValues[] = []
-    Papa.parse(selectedFile, {
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
         // Get the values from the CSV file
         const data = results.data as { [key: string]: string }[]
-
         // Transform the values to the correct format
-        values = data.map((row) => {
-          if (!row.value || !row.timestamp) {
-            throw new Error('Invalid CSV file')
-          }
-          return {
-            value: parseFloat(row.value),
-            timestamp: new Date(row.timestamp)
+        const values = data.map((row) => {
+          if (row.value && row.timestamp) {
+            return {
+              value: parseFloat(row.value),
+              timestamp: new Date(row.timestamp)
+            }
+          } else {
+            setParseError(true)
           }
         })
+        const filterValues = values.filter(
+          (value): value is ParseValues => !!value
+        )
+        if (filterValues && filterValues.length > 0) {
+          setCsvValues(filterValues)
+          setSelectedFile(file)
+        } else {
+          setParseError(true)
+        }
       }
     })
-    return values
-  }
-
-  const handleFileSelection = (file: File) => {
-    // Parse the CSV file and check if it is valid
-    // If it is valid, set the values to the state
-    let values: ParseValues[] | undefined = []
-    try {
-      values = parseCSV()
-      if (!values || values.length === 0) {
-        throw new Error('No data found in the CSV')
-      }
-      setCsvValues(values)
-    } catch (error) {
-      setParseError(true)
-      return
-    }
-    setSelectedFile(file)
   }
 
   const handleCreateMetric = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setFormValidationError(false)
-    // TODO Handle Errors
     const noNameNoUnit = !name || !unit
     const noValueNoTimestamp = !value || !timestamp
     const noCsvValues = !csvValues || csvValues.length === 0
@@ -300,7 +296,11 @@ const CreateMetric = () => {
                 <input
                   type="datetime-local"
                   id="time"
-                  onChange={(e) => setTimestamp(new Date(e.target.value))}
+                  onChange={(e) => {
+                    e.target.value
+                      ? setTimestamp(new Date(e.target.value))
+                      : setTimestamp(undefined)
+                  }}
                   className="block w-full rounded-lg border border-zinc-600 bg-zinc-700  p-2.5 text-sm text-white placeholder-zinc-400 focus:border-blue-500 focus:ring-blue-500"
                   placeholder="e.g. 107.57"
                   required
