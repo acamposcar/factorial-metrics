@@ -16,6 +16,14 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "cypress/e2e/metrics.cy.CJS",
+    "cypress/e2e/plugins/index.js"
+  ],
   "exclude": ["node_modules", "jest.config.cjs"]
 }
