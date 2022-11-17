@@ -45,7 +45,8 @@ const VisualizeMetric = ({
 
   const showError = isError && !averageValues
   const showGraph = !isLoading && averageValues && averageValues.length > 0
-  const showNoData = !isLoading && averageValues && averageValues.length === 0
+  const showNoValues = !isLoading && averageValues && averageValues.length === 0
+  const showNoMetric = !isLoading && !averageValues
 
   const shortName =
     metricName.length > 13 ? metricName.slice(0, 13) + '...' : metricName
@@ -89,9 +90,10 @@ const VisualizeMetric = ({
       <div className="grid place-items-center overflow-hidden">
         {isLoading && <Loading className="mt-10" />}
         {showError && <SomethingWentWrong />}
-        {showNoData && (
+        {showNoValues && (
           <NoContentFound title="Ooops! No values found for the selectd metric" />
         )}
+        {showNoMetric && <NoContentFound title="Ooops! No metric found" />}
         {showGraph && (
           <RenderLineChart unit={metric?.unit ?? ''} values={averageValues} />
         )}
